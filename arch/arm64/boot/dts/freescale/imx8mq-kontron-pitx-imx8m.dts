@@ -60,19 +60,33 @@
 		clock-frequency = <100000000>;
 	};
 
-	sound-wm8904 {
-		compatible = "fsl,imx-audio-wm8904";
-		model = "imx-wm8904";
-		cpu-dai = <&sai2>;
-		audio-codec = <&wm8904>;
-		audio-routing =
+	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,name = "Analog";
+		simple-audio-card,frame-master = <&cpudai>;
+		simple-audio-card,bitclock-master = <&cpudai>;
+		simple-audio-card,widgets =
+			"Line", "Line Out Jack",
+			"Microphone", "Microphone Jack",
+			"Line", "Line In Jack";
+		simple-audio-card,routing =
 			"Line Out Jack", "LINEOUTL",
 			"Line Out Jack", "LINEOUTR",
 			"IN1L", "Line In Jack",
 			"IN1R", "Line In Jack",
-			"Mic Jack", "MICBIAS",
-			"IN2L", "Mic Jack",
-			"IN2R", "Mic Jack";
+			"Microphone Jack", "MICBIAS",
+			"IN2L", "Microphone Jack",
+			"IN2R", "Microphone Jack";
+
+		cpudai: simple-audio-card,cpu {
+			sound-dai = <&sai2>;
+		};
+
+		linkcodec: simple-audio-card,codec {
+			sound-dai = <&codec>;
+			clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
+		};
 	};
 
 	sound-spdif {
@@ -265,12 +279,13 @@
 	pinctrl-0 = <&pinctrl_i2c3>;
 	status = "okay";
 
-	wm8904: wm8904@1a {
+	codec: wm8904@1a {
 		compatible = "wlf,wm8904";
 		reg = <0x1a>;
 		clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
 		clock-names = "mclk";
 		clock-frequency = <24000000>;
+		#sound-dai-cells = <0>;
 	};
 };
 
@@ -329,9 +344,9 @@
 &sai2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_sai2>;
-	assigned-clocks = <&clk IMX8MQ_CLK_SAI2>;
-	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1_OUT>;
-	assigned-clock-rates = <12288000>;
+	assigned-clocks = <&clk IMX8MQ_AUDIO_PLL1_BYPASS>, <&clk IMX8MQ_CLK_SAI2>;
+	assigned-clock-parents = <&clk IMX8MQ_AUDIO_PLL1>, <&clk IMX8MQ_AUDIO_PLL1_OUT>;
+	assigned-clock-rates = <0>, <24576000>;
 	status = "okay";
 };
 
