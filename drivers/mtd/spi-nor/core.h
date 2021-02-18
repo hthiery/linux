@@ -338,6 +338,11 @@ struct flash_info {
 					 * protection bits. Usually these will
 					 * power-up in a write-protected state.
 					 */
+#define SPI_NOR_AIM_SFDP       BIT(23) /* Try to parse SFDP. Used by flashes
+					 * that share the same JEDEC-ID, but
+					 * where a flash defines the SFDP tables
+					 * and the other doesn't.
+					 */
 
 	/* Part specific fixup hooks. */
 	const struct spi_nor_fixups *fixups;

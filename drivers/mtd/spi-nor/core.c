@@ -3096,7 +3096,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
 	spi_nor_manufacturer_init_params(nor);
 
 	if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-				 SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ)) &&
+				 SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ |
+				 SPI_NOR_AIM_SFDP)) &&
 	    !(nor->info->flags & SPI_NOR_SKIP_SFDP))
 		spi_nor_sfdp_init_params(nor);
 
